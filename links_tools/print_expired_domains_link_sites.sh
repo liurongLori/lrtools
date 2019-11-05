@@ -19,7 +19,10 @@ do
 done </tmp/link_sites_expire_domains
 echo -e $expired_domains
 
-TO='liurong@mbyte.tech'
-SUBJECT='以下old sites的域名即将过期，是否需要续费'
-BODY=$expired_domains
-echo -e "To: $TO\nSubject: $SUBJECT\n$BODY" | /usr/sbin/ssmtp $TO -F "Backup REPORT" -f link
+if [[ -z $expired_domains ]];
+then
+    TO='liurong@mbyte.tech';
+    SUBJECT='以下old sites的域名即将过期，是否需要续费';
+    BODY=$expired_domains;
+    echo -e "To: $TO\nSubject: $SUBJECT\n$BODY" | /usr/sbin/ssmtp $TO -F "Backup REPORT" -f link;
+fi
