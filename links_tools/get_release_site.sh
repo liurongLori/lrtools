@@ -2,8 +2,8 @@
 
 if [ "$1" != "again" ]
 then
-    cd ~/Guoqing/links/
-    source env/bin/activate
+    cd ~/links/
+    source venv/bin/activate
     python tests/dns_test.py --no_dry_run | cut -d ' ' -f 2 > /tmp/domains.txt
 fi
 
