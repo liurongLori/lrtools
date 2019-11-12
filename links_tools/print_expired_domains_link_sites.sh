@@ -19,7 +19,7 @@ do
 done </tmp/link_sites_expire_domains
 echo -e $expired_domains
 
-if [[ -z $expired_domains ]];
+if [[ ! -z $expired_domains ]];
 then
     TO='liurong@mbyte.tech';
     SUBJECT='以下old sites的域名即将过期，是否需要续费';
