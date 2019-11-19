@@ -10,14 +10,18 @@ do
     link_sites=`mysql -umingdatrade -ptrade@mingDA123 link_sites -e "select * from link_sites where site like '%$domain%'" 2> /dev/null`;
     #echo "mysql -umingdatrade -ptrade@mingDA123 links -e \"select * from site where site_domain like '%$domain%'\"";
     #echo "mysql -umingdatrade -ptrade@mingDA123 link_sites -e \"select * from link_sites where site like '%$domain%'\"";
-    if [[ ! -z $links ]];
+    no_renew=`cat /tmp/no_renew_domains | grep $1`;
+    if [[ -z $no_renew ]];
     then
-        echo "links: $domain";
-    elif [[ ! -z $link_sites ]];
-    then
-        echo "link_sites: $domain";
-    else
-        echo "may be bussiness site: $domain";
+        if [[ ! -z $links ]];
+        then
+            echo "links: $domain";
+        elif [[ ! -z $link_sites ]];
+        then
+            echo "link_sites: $domain";
+        else
+            echo "may be bussiness site: $domain";
+        fi
     fi
     #result=`grep $domain ~/links/a.txt`
     #if [[ ! $result ]];
