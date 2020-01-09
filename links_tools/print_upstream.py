@@ -19,27 +19,14 @@ if __name__ == '__main__':
         domains = [args.domain]
 
     with ManagedArgumentParser.api_by_args(args) as api:
-        upstreams_submit = {}
+        upstreams = {}
         for d in domains:
             domain = Domain.get(api.session(), d)
-            assert domain is not None, 'The %s is invalid' % d
-            if domain.upstream_sub_outbound:
-                for upstream in domain.upstream_sub_outbound:
-                    if upstream.site_domain in domains:
-                        continue
-                    upstreams_submit.setdefault(upstream.site_domain, [upstream.site.outbound_url])
-                    if upstream.url not in upstreams_submit[upstream.site_domain]:
-                        upstreams_submit[upstream.site_domain].append(upstream.url)
-                    if upstream.site.homepage_type == 'independent' and upstream.site.outbound_type == 'sub_outbounds':
-                        if upstream.site.domain.homepage_url() not in upstreams_submit[upstream.site_domain]:
-                            upstreams_submit[upstream.site_domain].append(upstream.site.domain.homepage_url())
-            else:
+            assert domain is not None, '%s is invalid' % d
+            upstreams.setdefault(domain.domain, [])
+            if domain.get_upstream_domains():
                 for upstream in domain.get_upstream_domains():
-                    if upstream.domain in domains:
-                        continue
-                    upstreams_submit.setdefault(upstream.domain, [upstream.site.outbound_url])
+                    upstreams[domain.domain].append(upstream.domain)
 
-        for upstream_domain in upstreams_submit:
-            upstream_desc = Domain.get(api.session(), upstream_domain)
-
-            print('%s\t%s\t%s\t%s' % (upstream_desc.site.block_expire, upstream_desc.domain, upstream_desc.contact_email, upstreams_submit[upstream_domain]))
+        for d in upstreams.items():
+            print(d)
