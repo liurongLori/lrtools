@@ -12,6 +12,7 @@ do
     #echo "mysql -umingdatrade -ptrade@mingDA123 link_sites -e \"select * from link_sites where site like '%$domain%'\"";
     #echo $domain;
     no_renew=`cat /tmp/no_renew_domains | grep $domain`;
+    bussiness_site=`cat ~/lrtools/links_tools/bussiness_sites | grep $domain`;
     if [[ -z $no_renew ]];
     then
         if [[ ! -z $links ]];
@@ -20,15 +21,11 @@ do
         elif [[ ! -z $link_sites ]];
         then
             echo "link_sites: $domain";
+        elif [[ ! -z $bussiness_site ]];
+        then
+            echo "bussiness site: $domain";
         else
-            echo "may be bussiness site: $domain";
+            echo "useless site: $domain";
         fi
     fi
-    #result=`grep $domain ~/links/a.txt`
-    #if [[ ! $result ]];
-    #then
-    #    echo $domain > /dev/null;
-    #else
-    #    echo $domain >> ~/links/b.txt;
-    #fi
 done
