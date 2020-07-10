@@ -1,6 +1,6 @@
 import traceback
 from datetime import datetime, timedelta
-from api.data_model import Domain
+from api.data_model import Domain, ExtarTargetSite
 from api.arg_parser import ManagedArgumentParser
 
 
@@ -16,7 +16,10 @@ if __name__ == '__main__':
         for d in source_domains:
             domain = Domain.get(api.session(), d)
             if not domain:
-                continue
+                extra_target_site = ExtarTargetSite.get(api.session(), d)
+                print('Extra target site %s has been expired, need to delete from table.' % d)
+                if not extra_target_site:
+                    continue
             expire_time = domain.registered_timestamp + timedelta(days=365)
             now_time = datetime.now()
             expire_days = expire_time - now_time
