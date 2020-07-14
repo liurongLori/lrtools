@@ -26,8 +26,9 @@ if __name__ == '__main__':
                 if domain and domain.status != 'abandoned':
                     print('%s expired at %s, update %s -> %s' %
                         (d, domain.registered_timestamp, domain.status, 'abandoned'))
+                    if domain.get_site():
+                        domain.get_site().status = 'abandoned'
                     domain.status = 'abandoned'
-                    domain.get_site().status = 'abandoned'
                 if extra_target_site:
                     print('Extra target site %s has been expired, need to delete from table.' % d)
 
