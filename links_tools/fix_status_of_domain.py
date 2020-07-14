@@ -1,6 +1,6 @@
 import traceback
 from datetime import datetime, timedelta
-from api.data_model import Domain, ExtarTargetSite
+from api.data_model import Domain, ExtraTargetSite
 from api.arg_parser import ManagedArgumentParser
 
 
@@ -15,19 +15,19 @@ if __name__ == '__main__':
             source_domains = [d.strip() for d in f.readlines()]
         for d in source_domains:
             domain = Domain.get(api.session(), d)
-            if not domain:
-                extra_target_site = ExtarTargetSite.get(api.session(), d)
-                print('Extra target site %s has been expired, need to delete from table.' % d)
-                if not extra_target_site:
-                    continue
-            expire_time = domain.registered_timestamp + timedelta(days=365)
+            extra_target_site = ExtraTargetSite.get(api.session(), d)
+            if not domain and not extra_target_site:
+                continue
+            registered_timestamp = domain.registered_timestamp or extra_target_site.create_timestamp
+            expire_time = registered_timestamp + timedelta(days=365)
             now_time = datetime.now()
             expire_days = expire_time - now_time
             if expire_days.days <= 0:
-                if domain.status != 'abandoned':
+                if domain and domain.status != 'abandoned':
                     print('%s expired at %s, update %s -> %s' %
                         (d, domain.registered_timestamp, domain.status, 'abandoned'))
                     domain.status = 'abandoned'
-                    if domain.site:
-                        domain.site.status = 'abandoned'
+                    domain.get_site().status = 'abandoned'
+                if extra_target_site:
+                    print('Extra target site %s has been expired, need to delete from table.' % d)
 
