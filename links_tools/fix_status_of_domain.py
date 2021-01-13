@@ -16,9 +16,12 @@ if __name__ == '__main__':
         for d in source_domains:
             domain = Domain.get(api.session(), d)
             extra_target_site = ExtraTargetSite.get(api.session(), d)
-            if not domain and not extra_target_site:
+            if domain and not extra_target_site:
+                registered_timestamp = domain.registered_timestamp
+            elif extra_target_site:
+                registered_timestamp = extra_target_site.create_timestamp
+            else:
                 continue
-            registered_timestamp = domain.registered_timestamp or extra_target_site.create_timestamp
             expire_time = registered_timestamp + timedelta(days=365)
             now_time = datetime.now()
             expire_days = expire_time - now_time
