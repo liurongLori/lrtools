@@ -7,6 +7,7 @@ fi
 for domain in `cat /tmp/check_if_link_sites`;
 do
     links=`mysql -umingdatrade -ptrade@mingDA123 links -e "select * from domain where domain like '%$domain%'" 2> /dev/null`;
+    extra_target_sites=`mysql -umingdatrade -ptrade@mingDA123 links -e "select * from extra_target_site where site_domain like '%$domain%'" 2> /dev/null`;
     link_sites=`mysql -umingdatrade -ptrade@mingDA123 link_sites -e "select * from link_sites where site like '%$domain%'" 2> /dev/null`;
     #echo "mysql -umingdatrade -ptrade@mingDA123 links -e \"select * from domain where domain like '%$domain%'\"";
     #echo "mysql -umingdatrade -ptrade@mingDA123 link_sites -e \"select * from link_sites where site like '%$domain%'\"";
@@ -18,6 +19,9 @@ do
         if [[ ! -z $links ]];
         then
             echo "links: $domain";
+        elif [[ ! -z $extra_target_sites ]];
+        then
+            echo "extra_target_sites: $domain";
         elif [[ ! -z $link_sites ]];
         then
             echo "link_sites: $domain";
