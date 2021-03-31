@@ -9,6 +9,7 @@ do
     links=`mysql -umingdatrade -ptrade@mingDA123 links -e "select * from domain where domain like '%$domain%'" 2> /dev/null`;
     extra_target_sites=`mysql -umingdatrade -ptrade@mingDA123 links -e "select * from extra_target_site where site_domain like '%$domain%'" 2> /dev/null`;
     link_sites=`mysql -umingdatrade -ptrade@mingDA123 link_sites -e "select * from link_sites where site like '%$domain%'" 2> /dev/null`;
+    sites=`mysql -umingdatrade -ptrade@mingDA123 link_sites -e "select * from sites where site like '%$domain%'" 2> /dev/null`;
     #echo "mysql -umingdatrade -ptrade@mingDA123 links -e \"select * from domain where domain like '%$domain%'\"";
     #echo "mysql -umingdatrade -ptrade@mingDA123 link_sites -e \"select * from link_sites where site like '%$domain%'\"";
     #echo $domain;
@@ -16,7 +17,10 @@ do
     bussiness_site=`cat ~/lrtools/links_tools/bussiness_sites | grep $domain`;
     if [[ -z $no_renew ]];
     then
-        if [[ ! -z $links ]];
+        if [[ ! -z $bussiness_site ]];
+        then
+            echo "bussiness site: $domain";
+        elif [[ ! -z $links ]];
         then
             echo "links: $domain";
         elif [[ ! -z $extra_target_sites ]];
@@ -25,11 +29,13 @@ do
         elif [[ ! -z $link_sites ]];
         then
             echo "link_sites: $domain";
-        elif [[ ! -z $bussiness_site ]];
+        elif [[ ! -z $sites ]];
         then
-            echo "bussiness site: $domain";
+            echo "sites: $domain";
         else
             echo "useless site: $domain";
         fi
+    else
+        echo "no renew: $domain";
     fi
 done
